@@ -1,7 +1,7 @@
 import React from "react";
-import { Grid, Typography, Button, Theme, Box } from "@material-ui/core";
+import { Grid, Typography, Button, Theme, Paper } from "@material-ui/core";
 import { withStyles, createStyles } from "@material-ui/core/styles";
-import formImage from '../../assets/images/formImage.png'
+import { FormImage } from ".";
 
 interface Props {
   titleText: string;
@@ -11,13 +11,57 @@ interface Props {
   alternateText: string;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   classes: {
+    root: string;
+    alternate: string;
+    titleWrapper: string;
+    btnWrapper: string;
+    formContainer: string;
+    form: string;
+    item: string;
     btnStyles: string;
     btnBoxShadow: string;
   };
 }
 
-const styles = ({ spacing }: Theme) =>
+const styles = ({ spacing, palette }: Theme) =>
   createStyles({
+    root: {
+      height: "100vh",
+    },
+
+    alternate: {
+      display: "flex",
+      justifyContent: "flex-end",
+      alignItems: "center",
+      flex: 1,
+      margin: spacing(2, 2),
+    },
+    titleWrapper: {
+      display: "flex",
+      width: "100%",
+      alignItems: "flex-start",
+      justifyContent: "flex-start",
+    },
+    btnWrapper: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: spacing(4),
+    },
+    formContainer: {
+      margin: spacing(8, 12),
+      display: "flex",
+      flex: 6,
+      flexDirection: "column",
+      alignItems: "center",
+      alignSelf: "center",
+    },
+    form: {
+      width: "100%",
+    },
+    item: {
+      margin: spacing(1),
+    },
     btnStyles: {
       padding: `${spacing(2)}px ${spacing(6)}px`,
     },
@@ -38,61 +82,55 @@ const MainForm: React.FC<Props> = ({
 }) => {
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
-        <Grid container>
-          <Grid item xs={4} style={{backgroundImage: `url(${formImage})`, backgroundSize: 'cover'}}/>
-          <Grid item xs={8}>
-            <Grid container justifyContent="flex-end" spacing={3} style={{marginTop: 30}}>
-              <Grid
-                container
-                item
-                xs={5}
-                alignItems="center"
-                justifyContent="flex-end"
+      <Grid container component="main" className={`${classes.root}`}>
+        <FormImage />
+        <Grid item xs={12} md={8} component={Paper}>
+          <div className={classes.alternate}>
+            <Typography
+              color="secondary"
+              align="center"
+              variant="inherit"
+              className={classes.item}
+            >
+              {alternateText}
+            </Typography>
+            <Button
+              onClick={alternateButtonOnClick}
+              color="primary"
+              size="large"
+              className={`${classes.btnStyles} ${classes.btnBoxShadow} ${classes.item}`}
+            >
+              {alternateButtonText}
+            </Button>
+          </div>
+          <div className={classes.formContainer}>
+            <div className={classes.titleWrapper}>
+              <Typography
+                color="initial"
+                component="h1"
+                variant="h5"
+                style={{ fontWeight: 600 }}
               >
-                <Typography color="secondary" align="center" variant="inherit">
-                  {alternateText}
-                </Typography>
-              </Grid>
-              <Grid item xs={5} sm={4} md={3}>
+                {titleText}
+              </Typography>
+            </div>
+            <form onSubmit={onSubmit} className={classes.form}>
+              {children}
+              <div className={classes.btnWrapper}>
                 <Button
-                  onClick={alternateButtonOnClick}
-                  color="primary"
+                  type="submit"
+                  variant="contained"
                   size="large"
-                  className={`${classes.btnStyles} ${classes.btnBoxShadow}`}
+                  color="primary"
+                  className={classes.btnStyles}
                 >
-                  {alternateButtonText}
+                  {buttonText}
                 </Button>
-              </Grid>
-            </Grid>
-            <Grid container spacing={2} justifyContent="center" style={{marginBottom: 30}}>
-              <Grid item xs={10}>
-                <Typography color="initial" variant="h5">
-                  {titleText}
-                </Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <form onSubmit={onSubmit}>
-                  <Grid container spacing={3}>
-                    {children}
-                    <Grid item container justifyContent="center">
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        size="large"
-                        color="primary"
-                        className={classes.btnStyles}
-                      >
-                        {buttonText}
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </form>
-              </Grid>
-            </Grid>
-          </Grid>
+              </div>
+            </form>
+          </div>
         </Grid>
-      </Box>
+      </Grid>
     </>
   );
 };

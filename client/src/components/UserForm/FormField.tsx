@@ -1,4 +1,4 @@
-import { FormControl, FormLabel, Grid, TextField } from "@material-ui/core";
+import { FormControl, TextField } from "@material-ui/core";
 import React from "react";
 
 interface Props {
@@ -21,20 +21,20 @@ const FormField: React.FC<Props> = ({
 }) => {
   return (
     <>
-      <Grid item xs={12}>
         <FormControl fullWidth={true} error={error && error}>
-          <FormLabel>{label}</FormLabel>
           <TextField
             aria-label={ariaLabel}
+            label={label}
+            margin="normal"
             name={name}
             type={type}
-            fullWidth={true}
-            margin="dense"
+            fullWidth
+            required
             inputProps={inputProps && inputProps}
           />
           {children}
         </FormControl>
-      </Grid>
+      
     </>
   );
 };
