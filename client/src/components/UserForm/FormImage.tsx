@@ -49,8 +49,8 @@ const styles = ({ spacing, palette }: Theme) =>
 
 const FormImage: React.FC<Props> = ({ classes }) => {
   return (
-    <Grid item md={4} className={`${classes.image}`} component={Paper}>
-      <Hidden smDown>
+    <Grid item sm={4} className={`${classes.image}`} component={Paper}>
+      <Hidden xsDown>
         <div className={classes.gradient}>
           <SvgIcon
             viewBox={VIEW_BOX}

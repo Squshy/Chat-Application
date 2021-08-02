@@ -84,7 +84,7 @@ const MainForm: React.FC<Props> = ({
     <>
       <Grid container component="main" className={`${classes.root}`}>
         <FormImage />
-        <Grid item xs={12} md={8} component={Paper}>
+        <Grid item xs={12} sm={8} component={Paper}>
           <div className={classes.alternate}>
             <Typography
               color="secondary"
