@@ -4,7 +4,8 @@ import { connect } from "react-redux";
 import { fetchUser } from "./store/utils/thunkCreators";
 import Signup from "./Signup.js";
 import Login from "./Login.js";
-import { Home, SnackbarError } from "./components";
+import Home from "./Home.js"
+import { SnackbarError } from "./components";
 
 const Routes = (props) => {
   const { user, fetchUser } = props;

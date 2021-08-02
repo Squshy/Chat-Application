@@ -1,5 +1,5 @@
 import React from "react";
-import { MuiThemeProvider } from "@material-ui/core";
+import { CssBaseline, MuiThemeProvider } from "@material-ui/core";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store";
@@ -15,6 +15,7 @@ function App() {
           <Routes />
         </BrowserRouter>
       </MuiThemeProvider>
+      <CssBaseline />
     </Provider>
   );
 }

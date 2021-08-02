@@ -4,10 +4,13 @@ export const theme = createTheme({
   typography: {
     fontFamily: "Open Sans, sans-serif",
     fontSize: 14,
+    h5: {
+      fontWeight: 600
+    },
     button: {
       textTransform: "none",
       letterSpacing: 0,
-      fontWeight: "bold"
+      fontWeight: "bold" 
     }
   },
   overrides: {
