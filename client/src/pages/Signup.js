@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { FormHelperText } from "@material-ui/core";
-import { register } from "./store/utils/thunkCreators";
-import { FormField, MainForm } from "./components/UserForm";
+import { register } from "../store/utils/thunkCreators";
+import { FormField, MainForm } from "../components/UserForm";
 
 const Signup = (props) => {
   const history = useHistory();
