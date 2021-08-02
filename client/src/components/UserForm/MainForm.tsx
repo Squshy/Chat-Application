@@ -34,7 +34,7 @@ const styles = ({ spacing, palette }: Theme) =>
       justifyContent: "flex-end",
       alignItems: "center",
       flex: 1,
-      margin: spacing(2, 2),
+      margin: spacing(4, 4),
     },
     titleWrapper: {
       display: "flex",

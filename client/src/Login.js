@@ -10,6 +10,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import { login } from "./store/utils/thunkCreators";
+import { FormField, MainForm } from "./components/UserForm";
 
 const Login = (props) => {
   const history = useHistory();
@@ -28,7 +29,19 @@ const Login = (props) => {
   }
 
   return (
-    <Grid container justify="center">
+    <>
+      <MainForm
+        buttonText="Login"
+        onSubmit={handleLogin}
+        titleText="Welcome back!"
+        alternateButtonText="Create account"
+        alternateText="Don't have an account?"
+        alternateButtonOnClick={() => history.push("/register")}
+      >
+        <FormField label="Username" ariaLabel="username" name="username" type="text"/>
+        <FormField label="Password" ariaLabel="password" type="password" name="password"/>
+      </MainForm>
+      {/* <Grid container justify="center">
       <Box>
         <Grid container item>
           <Typography>Need to register?</Typography>
@@ -62,7 +75,8 @@ const Login = (props) => {
           </Grid>
         </form>
       </Box>
-    </Grid>
+    </Grid> */}
+    </>
   );
 };
 

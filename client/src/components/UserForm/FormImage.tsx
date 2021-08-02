@@ -1,5 +1,12 @@
 import React from "react";
-import { Grid, Theme, Paper, SvgIcon, Typography } from "@material-ui/core";
+import {
+  Grid,
+  Theme,
+  Paper,
+  SvgIcon,
+  Typography,
+  Hidden,
+} from "@material-ui/core";
 import { withStyles, createStyles } from "@material-ui/core/styles";
 import formImage from "../../assets/images/formImage.png";
 import { Bubble } from "../../assets/svg/";
@@ -42,8 +49,8 @@ const styles = ({ spacing, palette }: Theme) =>
 
 const FormImage: React.FC<Props> = ({ classes }) => {
   return (
-    <>
-      <Grid item md={4} className={`${classes.image}`} component={Paper}>
+    <Grid item md={4} className={`${classes.image}`} component={Paper}>
+      <Hidden smDown>
         <div className={classes.gradient}>
           <SvgIcon
             viewBox={VIEW_BOX}
@@ -56,8 +63,8 @@ const FormImage: React.FC<Props> = ({ classes }) => {
             Converse with anyone with any language
           </Typography>
         </div>
-      </Grid>
-    </>
+      </Hidden>
+    </Grid>
   );
 };
 
