@@ -4,6 +4,7 @@ const onlineUsers = require("../../onlineUsers");
 
 // expects {recipientId, text, conversationId } in body (conversationId will be null if no conversation exists yet)
 router.post("/", async (req, res, next) => {
+  console.log(req.body)
   try {
     if (!req.user) {
       return res.sendStatus(401);

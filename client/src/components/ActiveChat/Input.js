@@ -6,7 +6,6 @@ import { postMessage } from "../../store/utils/thunkCreators";
 
 const styles = {
   root: {
-    justifySelf: "flex-end",
     marginTop: 15,
   },
   input: {
@@ -38,8 +37,10 @@ class Input extends Component {
       text: event.target.text.value,
       recipientId: this.props.otherUser.id,
       conversationId: this.props.conversationId,
-      sender: this.props.conversationId ? null : this.props.user,
+      sender: this.props.user,
+      // sender: this.props.conversationId ? null : this.props.user,
     };
+    
     await this.props.postMessage(reqBody);
     this.setState({
       text: "",
