@@ -66,7 +66,6 @@ router.post("/clearReadMessages", async (req, res, next) => {
     if (!req.user) {
       return res.sendStatus(401);
     }
-    console.log("we in here");
     const senderId = req.user.id;
     const { conversationId } = req.body;
 

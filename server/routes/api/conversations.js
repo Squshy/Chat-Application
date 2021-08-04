@@ -75,7 +75,6 @@ router.get("/", async (req, res, next) => {
 
       for (let j = 0; j < conversations[i].messages.length; j++) {
         const currentMessage = conversations[i].messages[j];
-        console.log("Current Message:", currentMessage)
         // skip our messages
         if(currentMessage.senderId === userId) continue;
         if (currentMessage.isRead) break;
@@ -85,7 +84,6 @@ router.get("/", async (req, res, next) => {
       conversations[i].messages.reverse();
 
       conversations[i].unreadMessageCount = unreadCount;
-      console.log("CONVO COUNT:", conversations[i].unreadMessageCount)
     }
     res.json(conversations);
   } catch (error) {
