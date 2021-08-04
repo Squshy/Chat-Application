@@ -12,7 +12,7 @@ router.post("/", async (req, res, next) => {
     const { recipientId, text, conversationId, sender } = req.body;
 
     if (conversationId) {
-      let conversation = await Conversation.findByPK(
+      let conversation = await Conversation.findConversationById(
         conversationId
       );
       // if the user is apart of the conversation send the message

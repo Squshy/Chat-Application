@@ -51,6 +51,8 @@ router.get("/", async (req, res, next) => {
     for (let i = 0; i < conversations.length; i++) {
       const convo = conversations[i];
       const convoJSON = convo.toJSON();
+      let unreadCount = 0;
+
 
       // set a property "otherUser" so that frontend will have easier access
       if (convoJSON.user1) {
@@ -72,6 +74,12 @@ router.get("/", async (req, res, next) => {
       convoJSON.latestMessageText = convoJSON.messages[0].text;
       conversations[i] = convoJSON;
       conversations[i].messages.reverse()
+
+        // loop forwards not backwards because we already reversed the list
+        for(let j = 0; j < conversations[i].messages.length; j++) {
+          if(conversations[i].messages[j].isRead) break; 
+          unreadCount++;
+      }
     }
 
     res.json(conversations);
