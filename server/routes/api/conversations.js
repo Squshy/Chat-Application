@@ -83,6 +83,7 @@ router.get("/", async (req, res, next) => {
         unreadCount++;
       }
       conversations[i].unreadMessageCount = unreadCount;
+      console.log("CONVO COUNT:", conversations[i].unreadMessageCount)
     }
     res.json(conversations);
   } catch (error) {

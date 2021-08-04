@@ -83,12 +83,18 @@ export const addNewConvoToStore = (state, recipientId, message) => {
 };
 
 export const clearConversationsReadMessages = (state, conversationId) => {
-  console.log("STATE:",state)
-  let xd = state.map((convo) => {
-    return convo
+  console.log("\n\n\n\n\nCLEARING CONVOS\n\n\n\n\n\n")
+  return state.map((convo) => {
+    if(convo.conversationId === conversationId) {
+      const updatedConvo = { ...convo };
+      for(let i = 0; i < convo.messages.length; i++) {
+        if(convo.messages[i].senderId === state.otherUser.id) {
+          if(convo.message[i].isRead) break;
+          convo.message[i].isRead = true;
+        }
+      }
+      return updatedConvo;
+    } else return convo;
   })
-  console.log("STATE.MAP((CONVO)):",xd)
-  // return state.map((convo) => {
-
-  // })
+  
 }

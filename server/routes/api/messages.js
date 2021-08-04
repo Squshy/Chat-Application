@@ -71,7 +71,7 @@ router.post("/clearReadMessages", async (req, res, next) => {
     const { conversationId } = req.body;
 
     if (conversationId) {
-      const updatedMessages = await Message.update(
+      await Message.update(
         {
           isRead: true,
         },
@@ -85,11 +85,10 @@ router.post("/clearReadMessages", async (req, res, next) => {
             },
           },
         }
-      ).then(res => {
-        console.log("It half worked?:", res)
-      }).catch(err => console.log(err));
-      console.log("updatedMessages:", updatedMessages)
-      res.json({ updatedMessages });
+      )
+        .then((res) => {})
+        .catch((err) => console.log(err));
+      res.sendStatus(200);
     } else {
       return res.sendStatus(403);
     }
