@@ -65,7 +65,33 @@ router.post("/clearReadMessages", async (req, res, next) => {
     if (!req.user) {
       return res.sendStatus(401);
     }
+    
     const senderId = req.user.id;
+    const { conversationId } = req.body;
+
+    if (conversationId) {
+      const updatedMessages = await Message.find({
+        where: {
+          conversationId: {
+            conversationId,
+          },
+          senderId: {
+            [Op.not]: senderId,
+          },
+        },
+      }).on(`success`, (message) => {
+        if (message) {
+          message
+            .update({
+              isRead: true,
+            })
+            .then(function () {});
+        }
+      });
+      res.json({updatedMessages})
+    } else {
+      return res.sendStatus(403);
+    }
   } catch (error) {
     next(error);
   }

@@ -82,6 +82,13 @@ export const addNewConvoToStore = (state, recipientId, message) => {
   });
 };
 
-export const clearConversationsReadMessages = (conversationId) => {
+export const clearConversationsReadMessages = (state, conversationId) => {
+  console.log("STATE:",state)
+  let xd = state.map((convo) => {
+    return convo
+  })
+  console.log("STATE.MAP((CONVO)):",xd)
+  // return state.map((convo) => {
 
+  // })
 }

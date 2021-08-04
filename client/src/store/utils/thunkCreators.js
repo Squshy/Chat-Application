@@ -5,7 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
-  setClearMessages
+  setReadMessages
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -122,7 +122,7 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 export const clearReadMessages = (body) => async (dispatch) => {
   try {
     await axios.post(`/api/messages/clearReadMessages`, body);
-    //dispatch(setClearMessages(2))
+    dispatch(setReadMessages(body.conversationId))
   } catch (error) {
     console.log(error)
   }
