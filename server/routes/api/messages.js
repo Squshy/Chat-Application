@@ -21,9 +21,10 @@ router.post("/", async (req, res, next) => {
         conversation.user2Id === senderId
       ) {
         const message = await Message.create({
-          senderId: senderId,
-          text: text,
-          covnersationId: conversationId,
+          senderId,
+          text,
+          conversationId,
+          isRead: false
         });
         return res.json({ message, sender });
       } else {
@@ -51,6 +52,7 @@ router.post("/", async (req, res, next) => {
       senderId,
       text,
       conversationId: conversation.id,
+      isRead: false,
     });
     res.json({ message, sender });
   } catch (error) {
