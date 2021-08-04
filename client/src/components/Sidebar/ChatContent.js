@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     height: "2rem",
     width: "2rem",
     lineHeight: "2rem",
-    background: theme.palette.primary.main
+    background: theme.palette.primary.main,
   },
 }));
 
@@ -57,9 +57,11 @@ const ChatContent = (props) => {
         </Typography>
       </Box>
       <Box className={classes.unreadMessageContainer}>
-        <Typography className={classes.unreadMessages}>
-          {unreadMessageCount > 100 ? "99+" : unreadMessageCount}
-        </Typography>
+        {unreadMessageCount > 0 && (
+          <Typography className={classes.unreadMessages}>
+            {unreadMessageCount > 100 ? "99+" : unreadMessageCount}
+          </Typography>
+        )}
       </Box>
     </Box>
   );
