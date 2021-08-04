@@ -21,7 +21,7 @@ const FormField: React.FC<Props> = ({
 }) => {
   return (
     <>
-        <FormControl fullWidth={true} error={error && error}>
+        <FormControl fullWidth={true} error={error}>
           <TextField
             aria-label={ariaLabel}
             label={label}
@@ -30,7 +30,7 @@ const FormField: React.FC<Props> = ({
             type={type}
             fullWidth
             required
-            inputProps={inputProps && inputProps}
+            inputProps={inputProps}
           />
           {children}
         </FormControl>

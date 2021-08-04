@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Grid,
+  Box,
   Theme,
   Paper,
   SvgIcon,
@@ -16,6 +17,7 @@ interface Props {
     image: string;
     gradient: string;
     text: string;
+    svg: string
   };
 }
 
@@ -45,24 +47,28 @@ const styles = ({ spacing, palette }: Theme) =>
       color: "#fff",
       textAlign: "center",
     },
+    svg: {
+      width: 60,
+      height: 60
+    }
   });
 
 const FormImage: React.FC<Props> = ({ classes }) => {
   return (
     <Grid item sm={4} className={`${classes.image}`} component={Paper}>
       <Hidden xsDown>
-        <div className={classes.gradient}>
+        <Box className={classes.gradient}>
           <SvgIcon
             viewBox={VIEW_BOX}
             fontSize="large"
-            style={{ width: 60, height: 60 }}
+            className={classes.svg}
           >
             <Bubble viewBox={VIEW_BOX} />
           </SvgIcon>
           <Typography className={classes.text} variant="h5" component="h1">
             Converse with anyone with any language
           </Typography>
-        </div>
+        </Box>
       </Hidden>
     </Grid>
   );
