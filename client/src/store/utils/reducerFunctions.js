@@ -81,3 +81,7 @@ export const addNewConvoToStore = (state, recipientId, message) => {
     }
   });
 };
+
+export const clearConversationsReadMessages = (conversationId) => {
+
+}

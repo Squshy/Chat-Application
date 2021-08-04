@@ -24,11 +24,11 @@ router.post("/", async (req, res, next) => {
           senderId,
           text,
           conversationId,
-          isRead: false
+          isRead: false,
         });
         return res.json({ message, sender });
       } else {
-        return res.sendStatus(403)
+        return res.sendStatus(403);
       }
     }
 
@@ -55,6 +55,17 @@ router.post("/", async (req, res, next) => {
       isRead: false,
     });
     res.json({ message, sender });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/clearReadMessages", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const senderId = req.user.id;
   } catch (error) {
     next(error);
   }
