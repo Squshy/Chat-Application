@@ -27,7 +27,7 @@ const Login = (props) => {
         onSubmit={handleLogin}
         titleText="Welcome back!"
         alternateButtonText="Create account"
-        alternateText="Don't have an account?"
+        alternateRegistrationText="Don't have an account?"
         alternateButtonOnClick={() => history.push("/register")}
       >
         <FormField label="Username" ariaLabel="username" name="username" type="text"/>

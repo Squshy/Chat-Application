@@ -36,7 +36,7 @@ const Signup = (props) => {
         onSubmit={handleRegister}
         titleText={`Create an account.`}
         alternateButtonText={`Login`}
-        alternateText={`Already have an account?`}
+        alternateRegistrationText={`Already have an account?`}
         alternateButtonOnClick={() => history.push("/login")}
       >
         <FormField
