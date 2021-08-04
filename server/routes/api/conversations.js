@@ -75,10 +75,14 @@ router.get("/", async (req, res, next) => {
       conversations[i].messages.reverse();
 
       // loop forwards not backwards because we already reversed the list
-      // for (let j = 0; j < conversations[i].messages.length; j++) {
-      //   if (conversations[i].messages[j].isRead) break;
-      //   unreadCount++;
-      // }
+      for (let j = 0; j < conversations[i].messages.length; j++) {
+        const currentMessage = conversations[i].messages[j];
+        // skip our messages
+        if(currentMessage.senderId === userId) continue;
+        if (currentMessage.isRead) break;
+        unreadCount++;
+      }
+      console.log(`Unread count for conversation with ${conversations[i].otherUser}:`, unreadCount)
     }
     res.json(conversations);
   } catch (error) {
