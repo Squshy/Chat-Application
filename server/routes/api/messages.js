@@ -12,7 +12,7 @@ router.post("/", async (req, res, next) => {
     const { recipientId, text, conversationId, sender } = req.body;
 
     if (conversationId) {
-      let conversation = await Conversation.findConversationById(
+      let conversation = await Conversation.findByPK(
         conversationId
       );
       // if the user is apart of the conversation send the message
@@ -27,7 +27,7 @@ router.post("/", async (req, res, next) => {
         });
         return res.json({ message, sender });
       } else {
-        return res.sendStatus(401)
+        return res.sendStatus(403)
       }
     }
 
