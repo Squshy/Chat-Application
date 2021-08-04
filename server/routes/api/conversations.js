@@ -82,7 +82,7 @@ router.get("/", async (req, res, next) => {
         if (currentMessage.isRead) break;
         unreadCount++;
       }
-      console.log(`Unread count for conversation with ${conversations[i].otherUser}:`, unreadCount)
+      conversations[i].unReadcount = unreadCount;
     }
     res.json(conversations);
   } catch (error) {
