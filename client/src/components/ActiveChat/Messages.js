@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Box } from "@material-ui/core";
 import { SenderBubble, OtherUserBubble } from "../ActiveChat";
 import { makeStyles } from "@material-ui/core/styles";
@@ -16,12 +16,10 @@ const useStyles = makeStyles({
 const Messages = (props) => {
   const { messages, otherUser, userId } = props;
   const classes = useStyles()
-  const sortedMessages = useMemo(() => messages.sort((a, b) =>
-    moment(a.createdAt).unix() - moment(b.createdAt).unix()), [messages]);
 
   return (
     <Box className={classes.root}>
-      {sortedMessages.map((message) => {
+      {messages.map((message) => {
         const time = moment(message.createdAt).format("h:mm");
 
         return message.senderId === userId ? (
