@@ -72,16 +72,18 @@ router.get("/", async (req, res, next) => {
       // set properties for notification count and latest message preview
       convoJSON.latestMessageText = convoJSON.messages[0].text;
       conversations[i] = convoJSON;
-      conversations[i].messages.reverse();
 
-      // loop forwards not backwards because we already reversed the list
       for (let j = 0; j < conversations[i].messages.length; j++) {
         const currentMessage = conversations[i].messages[j];
+        console.log("Current Message:", currentMessage)
         // skip our messages
         if(currentMessage.senderId === userId) continue;
         if (currentMessage.isRead) break;
         unreadCount++;
       }
+
+      conversations[i].messages.reverse();
+
       conversations[i].unreadMessageCount = unreadCount;
       console.log("CONVO COUNT:", conversations[i].unreadMessageCount)
     }
