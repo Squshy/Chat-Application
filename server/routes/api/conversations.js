@@ -51,7 +51,6 @@ router.get("/", async (req, res, next) => {
     for (let i = 0; i < conversations.length; i++) {
       const convo = conversations[i];
       const convoJSON = convo.toJSON();
-      let unreadCount = 0;
 
       // set a property "otherUser" so that frontend will have easier access
       if (convoJSON.user1) {
@@ -73,13 +72,10 @@ router.get("/", async (req, res, next) => {
       convoJSON.latestMessageText = convoJSON.messages[0].text;
       conversations[i] = convoJSON;
 
-      for (let j = 0; j < conversations[i].messages.length; j++) {
-        const currentMessage = conversations[i].messages[j];
-        // skip our messages
-        if(currentMessage.senderId === userId) continue;
-        if (currentMessage.isRead) break;
-        unreadCount++;
-      }
+      const unreadCount = conversations[i].messages.reduce((message) => {
+        if(message.senderId === userId) return 1
+        return 0
+      });
 
       conversations[i].messages.reverse();
 
