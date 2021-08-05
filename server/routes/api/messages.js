@@ -27,7 +27,6 @@ router.post("/", async (req, res, next) => {
           conversationId,
           isRead: false,
         });
-        console.log("New message:", message, sender);
         return res.json({ message, sender });
       } else {
         return res.sendStatus(403);
@@ -56,7 +55,6 @@ router.post("/", async (req, res, next) => {
       conversationId: conversation.id,
       isRead: false,
     });
-    console.log("New message:", message, sender);
     res.json({ message, sender });
   } catch (error) {
     next(error);
