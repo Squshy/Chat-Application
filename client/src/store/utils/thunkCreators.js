@@ -101,7 +101,7 @@ export const postMessage = (body) => async (dispatch) => {
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
     } else {
-      dispatch(setNewMessage(data.message, true, null));
+      dispatch(setNewMessage(data.message, data.sender));
     }
 
     sendMessage(data, body);
