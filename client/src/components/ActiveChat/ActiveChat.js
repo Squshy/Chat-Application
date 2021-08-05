@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback, useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
 import { Input, Header, Messages } from "./index";
@@ -24,9 +24,9 @@ const useStyles = makeStyles(() => ({
 const ActiveChat = (props) => {
   const classes = useStyles();
   const { user } = props;
-  const conversation = props.conversation || {};
+  const conversation = useMemo(() => props.conversation || {}, [props.conversation]);
 
-  const clearReadMessage = async () => {
+  const clearReadMessage = useCallback(async () => {
     if (conversation.unreadMessageCount > 0) {
       const reqBody = {
         conversationId: conversation.id,
@@ -34,11 +34,11 @@ const ActiveChat = (props) => {
       };
       await props.clearReadMessages(reqBody);
     }
-  };
+  },[conversation, user, props]);
 
   useEffect(() => {
     clearReadMessage();
-  });
+  }, [clearReadMessage]);
 
   return (
     <Box className={classes.root}>
