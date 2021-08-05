@@ -103,7 +103,8 @@ export const postMessage = (body) => async (dispatch) => {
     } else {
       dispatch(setNewMessage(data.message, data.sender));
     }
-
+    console.log("Data:",data)
+    console.log("Body:",body)
     sendMessage(data, body);
   } catch (error) {
     console.error(error);
