@@ -1,21 +1,25 @@
 export const addMessageToStore = (state, payload) => {
-  const { message, sender } = payload;
+  const { message, areWeSending, sender } = payload;
+  console.log("Are we the sender:", areWeSending)
+
   // if sender isn't null, that means the message needs to be put in a brand new convo
   if (sender !== null) {
     const newConvo = {
       id: message.conversationId,
       otherUser: sender,
       messages: [message],
+      unreadMessageCount: areWeSending ? 0 : 1,
     };
     newConvo.latestMessageText = message.text;
     return [newConvo, ...state];
   }
-
+  
   return state.map((convo) => {
     if (convo.id === message.conversationId) {
       const convoCopy = { ...convo };
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
+      if(!areWeSending) convoCopy.unreadMessageCount += 1;
 
       return convoCopy;
     } else {
