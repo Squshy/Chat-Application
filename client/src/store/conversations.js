@@ -4,7 +4,7 @@ import {
   addSearchedUsersToStore,
   removeOfflineUserFromStore,
   addMessageToStore,
-  clearConversationsReadMessages
+  clearConversationsReadMessages,
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -72,9 +72,9 @@ export const addConversation = (recipientId, newMessage) => {
 export const setReadMessages = (conversationId) => {
   return {
     type: CLEAR_READ_MESSAGES,
-    conversationId
-  }
-}
+    conversationId,
+  };
+};
 
 // REDUCER
 
@@ -101,7 +101,7 @@ const reducer = (state = [], action) => {
         action.payload.newMessage
       );
     case CLEAR_READ_MESSAGES:
-        return clearConversationsReadMessages(state, action.conversationId)
+      return clearConversationsReadMessages(state, action.conversationId);
     default:
       return state;
   }
