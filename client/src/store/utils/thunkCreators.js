@@ -121,7 +121,7 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 
 export const clearReadMessages = (body) => async (dispatch) => {
   try {
-    await axios.post(`/api/messages/clearReadMessages`, body);
+    await axios.put(`/api/messages`, body);
     dispatch(setReadMessages(body.conversationId));
   } catch (error) {
     console.log(error);

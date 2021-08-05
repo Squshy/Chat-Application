@@ -61,7 +61,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.post("/clearReadMessages", async (req, res, next) => {
+router.put("/", async (req, res, next) => {
   try {
     if (!req.user) {
       return res.sendStatus(401);
@@ -85,8 +85,6 @@ router.post("/clearReadMessages", async (req, res, next) => {
           },
         }
       )
-        .then((res) => {})
-        .catch((err) => console.log(err));
       res.sendStatus(200);
     } else {
       return res.sendStatus(403);
