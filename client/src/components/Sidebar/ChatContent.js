@@ -39,24 +39,17 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.primary.main,
   },
   boldText: {
-    fontWeight: 'bold',
-    color: '#000'
-  }
+    fontWeight: "bold",
+    color: "#000",
+  },
 }));
-
 
 const ChatContent = (props) => {
   const classes = useStyles();
-  const [isRead, setIsRead] = useState(false);
 
   const { conversation } = props;
-  const { latestMessageText, otherUser, unreadMessageCount } = conversation;
-
-  useEffect(() => {
-    const [lastMessage] = conversation.messages.slice(-1);
-    if(!lastMessage.isRead && lastMessage.senderId === otherUser.id) setIsRead(false);
-    else setIsRead(true)
-  }, [isRead, setIsRead, otherUser, conversation])
+  const { otherUser, unreadMessageCount } = conversation;
+  const [latestMessage] = conversation.messages.slice(-1);
 
   return (
     <Box className={classes.root}>
@@ -64,9 +57,17 @@ const ChatContent = (props) => {
         <Typography className={classes.username}>
           {otherUser.username}
         </Typography>
-        <Typography className={`${classes.previewText} ${!isRead && `${classes.boldText}`}`}>
-          {latestMessageText}
-        </Typography>
+        {latestMessage && (
+          <Typography
+            className={`${classes.previewText} ${
+              !latestMessage.isRead &
+                (otherUser.id === latestMessage.senderId) &&
+              `${classes.boldText}`
+            }`}
+          >
+            {latestMessage.text}
+          </Typography>
+        )}
       </Box>
       <Box className={classes.unreadMessageContainer}>
         {unreadMessageCount > 0 && (
