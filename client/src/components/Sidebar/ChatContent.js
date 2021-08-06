@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -38,13 +38,25 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: "2rem",
     background: theme.palette.primary.main,
   },
+  boldText: {
+    fontWeight: 'bold',
+    color: '#000'
+  }
 }));
+
 
 const ChatContent = (props) => {
   const classes = useStyles();
+  const [isRead, setIsRead] = useState(false);
 
   const { conversation } = props;
   const { latestMessageText, otherUser, unreadMessageCount } = conversation;
+
+  useEffect(() => {
+    const [lastMessage] = conversation.messages.slice(-1);
+    if(!lastMessage.isRead && lastMessage.senderId === otherUser.id) setIsRead(false);
+    else setIsRead(true)
+  }, [isRead, setIsRead, otherUser, conversation])
 
   return (
     <Box className={classes.root}>
@@ -52,7 +64,7 @@ const ChatContent = (props) => {
         <Typography className={classes.username}>
           {otherUser.username}
         </Typography>
-        <Typography className={classes.previewText}>
+        <Typography className={`${classes.previewText} ${!isRead && `${classes.boldText}`}`}>
           {latestMessageText}
         </Typography>
       </Box>
