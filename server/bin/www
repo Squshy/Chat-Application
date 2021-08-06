@@ -36,6 +36,7 @@ io.on("connection", (socket) => {
   socket.on("go-online", (id) => {
     if (!onlineUsers.includes(id)) {
       onlineUsers.push(id);
+      // store the users socket in hash table
       onlineSockets[id] = socket.id;
     }
     // send the user who just went online to everyone else who is already online
@@ -44,6 +45,7 @@ io.on("connection", (socket) => {
 
   socket.on("new-message", (data) => {
     if (onlineUsers.includes(data.recipientId)) {
+      // only need to emit message if the user is online
       socket.to(onlineSockets[data.recipientId]).emit("new-message", {
         message: data.message,
         recipientId: data.recipientId,
@@ -56,6 +58,8 @@ io.on("connection", (socket) => {
     if (onlineUsers.includes(id)) {
       userIndex = onlineUsers.indexOf(id);
       onlineUsers.splice(userIndex, 1);
+      // remove user in hash table
+      delete onlineSockets[id]
       socket.broadcast.emit("remove-offline-user", id);
     }
   });
