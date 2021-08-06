@@ -22,4 +22,10 @@ Conversation.findConversation = async function (user1Id, user2Id) {
   return conversation;
 };
 
+Conversation.verifyUserInConversation = async (conversationId, userId) => {
+  let conversation = await Conversation.findByPk(conversationId);
+  // if the user is apart of the conversation send the message
+  return conversation.user1Id === userId || conversation.user2Id === userId;
+};
+
 module.exports = Conversation;

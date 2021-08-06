@@ -69,12 +69,52 @@ router.get("/", async (req, res, next) => {
       }
 
       // set properties for notification count and latest message preview
-      convoJSON.latestMessageText = convoJSON.messages[0].text;
       conversations[i] = convoJSON;
-      conversations[i].messages.reverse()
-    }
 
+      const unreadCount = conversations[i].messages.reduce((accumulator, message) => {
+        if (message.senderId !== userId && message.isRead === false) return accumulator + 1;
+        return accumulator;
+      }, 0);
+
+      conversations[i].messages.reverse();
+      conversations[i].unreadMessageCount = unreadCount;
+    }
     res.json(conversations);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.put("/:id/read-status", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const senderId = req.user.id;
+    const { conversationId } = req.body;
+    if (!Conversation.verifyUserInConversation(conversationId, senderId))
+      return res.sendStatus(403);
+
+    if (conversationId) {
+      await Message.update(
+        {
+          isRead: true,
+        },
+        {
+          where: {
+            conversationId: {
+              [Op.eq]: conversationId,
+            },
+            senderId: {
+              [Op.not]: senderId,
+            },
+          },
+        }
+      );
+      res.sendStatus(204);
+    } else {
+      return res.sendStatus(400);
+    }
   } catch (error) {
     next(error);
   }
