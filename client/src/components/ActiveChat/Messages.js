@@ -1,17 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { Box } from "@material-ui/core";
+import { Box, Avatar } from "@material-ui/core";
 import { SenderBubble, OtherUserBubble } from "../ActiveChat";
 import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     flexDirection: "column",
     overflow: "auto",
     height: 0,
   },
-});
+  bubbleHolder: {
+    display: "flex",
+    alignItems: "flex-end",
+    flexDirection: "column",
+  },
+  userBubble: {
+    height: theme.spacing(3),
+    width: theme.spacing(3)
+  },
+}));
 
 const Messages = (props) => {
   const { messages, otherUser, userId } = props;
@@ -22,15 +31,11 @@ const Messages = (props) => {
   useEffect(() => {
     for (let i = 0; i < messages.length; i++) {
       const currentMessage = messages[i];
-      console.log("Checking message:", currentMessage);
       // skip their messages
       if (currentMessage.senderId === otherUser.id) continue;
       if (currentMessage.isRead === true)
         setOthersLastSeenMessage(currentMessage);
     }
-    console.log("Last seen message:", othersLastSeenMessage);
-    console.log("Messages:", messages);
-    console.log("Other User:", otherUser)
   }, [setOthersLastSeenMessage, othersLastSeenMessage, messages, otherUser]);
 
   return (
@@ -39,10 +44,12 @@ const Messages = (props) => {
         const time = moment(message.createdAt).format("h:mm");
         if (message.senderId === userId) {
           return (
-            <>
-              <SenderBubble key={message.id} text={message.text} time={time} />
-              {othersLastSeenMessage === message && <p>LAST SEEN MESSAGE</p>}
-            </>
+            <Box key={message.id} className={classes.bubbleHolder}>
+              <SenderBubble text={message.text} time={time} />
+              {othersLastSeenMessage === message && (
+                <Avatar alt={`${otherUser.username}`} src={`${otherUser.photoUrl}`} className={classes.userBubble}></Avatar>
+              )}
+            </Box>
           );
         } else {
           return (
