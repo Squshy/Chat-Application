@@ -4,7 +4,7 @@ const onlineUsers = require("../../onlineUsers");
 const { Op } = require("sequelize");
 
 const verifyUserInConversation = async (conversationId, userId) => {
-  let conversation = await Conversation.findConversationById(conversationId);
+  let conversation = await Conversation.findByPk(conversationId);
   // if the user is apart of the conversation send the message
   return conversation.user1Id === userId || conversation.user2Id === userId;
 };
