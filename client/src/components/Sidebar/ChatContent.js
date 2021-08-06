@@ -50,6 +50,7 @@ const ChatContent = (props) => {
   const { conversation } = props;
   const { otherUser, unreadMessageCount } = conversation;
   const [latestMessage] = conversation.messages.slice(-1);
+  console.log("Conversation:",conversation)
 
   return (
     <Box className={classes.root}>

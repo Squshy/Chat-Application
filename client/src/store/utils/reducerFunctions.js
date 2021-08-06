@@ -19,7 +19,7 @@ export const addMessageToStore = (state, payload) => {
       const convoCopy = { ...convo };
       convoCopy.messages.push(message);
 
-      if ((sender.id === convoCopy.otherUser.id) & !message.isRead)
+      if ((sender.id === convoCopy.otherUser.id) & !message.isRead) 
         convoCopy.unreadMessageCount += 1;
 
       return convoCopy;

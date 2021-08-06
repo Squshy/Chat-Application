@@ -72,13 +72,11 @@ router.get("/", async (req, res, next) => {
       conversations[i] = convoJSON;
 
       const unreadCount = conversations[i].messages.reduce((accumulator, message) => {
-        console.log(accumulator)
-        if (message.senderId === userId) return accumulator + 1;
+        if (message.senderId !== userId && message.isRead === false) return accumulator + 1;
         return accumulator;
       }, 0);
 
       conversations[i].messages.reverse();
-      
       conversations[i].unreadMessageCount = unreadCount;
     }
     res.json(conversations);

@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
   userBubble: {
     height: theme.spacing(3),
-    width: theme.spacing(3)
+    width: theme.spacing(3),
   },
 }));
 
@@ -47,7 +47,11 @@ const Messages = (props) => {
             <Box key={message.id} className={classes.bubbleHolder}>
               <SenderBubble text={message.text} time={time} />
               {othersLastSeenMessage === message && (
-                <Avatar alt={`${otherUser.username}`} src={`${otherUser.photoUrl}`} className={classes.userBubble}></Avatar>
+                <Avatar
+                  alt={`${otherUser.username}`}
+                  src={`${otherUser.photoUrl}`}
+                  className={classes.userBubble}
+                ></Avatar>
               )}
             </Box>
           );
