@@ -119,10 +119,11 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
   }
 };
 
-export const clearReadMessages = (body) => async (dispatch) => {
+export const clearReadMessages = (body) => async (dispatch, getState) => {
   try {
     await axios.put(`/api/messages`, body);
-    dispatch(setReadMessages(body.conversationId));
+    const { user } = getState()
+    dispatch(setReadMessages(body.conversationId, user));
   } catch (error) {
     console.log(error);
   }

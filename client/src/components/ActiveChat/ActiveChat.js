@@ -40,6 +40,8 @@ const ActiveChat = (props) => {
     clearReadMessage();
   }, [clearReadMessage]);
 
+  
+
   return (
     <Box className={classes.root}>
       {conversation.otherUser && (

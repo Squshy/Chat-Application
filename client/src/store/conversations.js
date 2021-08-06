@@ -69,10 +69,13 @@ export const addConversation = (recipientId, newMessage) => {
   };
 };
 
-export const setReadMessages = (conversationId) => {
+export const setReadMessages = (conversationId, user) => {
   return {
     type: CLEAR_READ_MESSAGES,
-    conversationId,
+    payload: {
+      conversationId,
+      user,
+    },
   };
 };
 
@@ -101,7 +104,7 @@ const reducer = (state = [], action) => {
         action.payload.newMessage
       );
     case CLEAR_READ_MESSAGES:
-      return clearConversationsReadMessages(state, action.conversationId);
+      return clearConversationsReadMessages(state, action.payload);
     default:
       return state;
   }
