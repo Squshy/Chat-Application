@@ -3,11 +3,7 @@ const { Conversation, Message } = require("../../db/models");
 const onlineUsers = require("../../onlineUsers");
 const { Op } = require("sequelize");
 
-const verifyUserInConversation = async (conversationId, userId) => {
-  let conversation = await Conversation.findByPk(conversationId);
-  // if the user is apart of the conversation send the message
-  return conversation.user1Id === userId || conversation.user2Id === userId;
-};
+
 
 // expects {recipientId, text, conversationId } in body (conversationId will be null if no conversation exists yet)
 router.post("/", async (req, res, next) => {
@@ -19,7 +15,7 @@ router.post("/", async (req, res, next) => {
     const { recipientId, text, conversationId, sender } = req.body;
 
     if (conversationId) {
-      const isUserInConvo = verifyUserInConversation(conversationId, senderId);
+      const isUserInConvo = Conversation.verifyUserInConversation(conversationId, senderId);
       // if the user is apart of the conversation send the message
       if (isUserInConvo) {
         const message = await Message.create({
@@ -57,41 +53,6 @@ router.post("/", async (req, res, next) => {
       isRead: false,
     });
     res.json({ message, sender });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.put("/", async (req, res, next) => {
-  try {
-    if (!req.user) {
-      return res.sendStatus(401);
-    }
-    const senderId = req.user.id;
-    const { conversationId } = req.body;
-    if (!verifyUserInConversation(conversationId, senderId))
-      return res.sendStatus(403);
-
-    if (conversationId) {
-      await Message.update(
-        {
-          isRead: true,
-        },
-        {
-          where: {
-            conversationId: {
-              [Op.eq]: conversationId,
-            },
-            senderId: {
-              [Op.not]: senderId,
-            },
-          },
-        }
-      );
-      res.sendStatus(200);
-    } else {
-      return res.sendStatus(403);
-    }
   } catch (error) {
     next(error);
   }

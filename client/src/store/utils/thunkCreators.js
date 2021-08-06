@@ -103,7 +103,7 @@ export const postMessage = (body) => async (dispatch) => {
     } else {
       dispatch(setNewMessage(data.message, data.sender));
     }
-    
+
     sendMessage(data, body);
   } catch (error) {
     console.error(error);
@@ -121,8 +121,8 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 
 export const clearReadMessages = (body) => async (dispatch, getState) => {
   try {
-    await axios.put(`/api/messages`, body);
-    const { user } = getState()
+    await axios.put(`/api/conversations/${body.conversationId}/read-status`, body);
+    const { user } = getState();
     dispatch(setReadMessages(body.conversationId, user));
   } catch (error) {
     console.log(error);

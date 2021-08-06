@@ -85,4 +85,39 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.put("/:id/read-status", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const senderId = req.user.id;
+    const { conversationId } = req.body;
+    if (!Conversation.verifyUserInConversation(conversationId, senderId))
+      return res.sendStatus(403);
+
+    if (conversationId) {
+      await Message.update(
+        {
+          isRead: true,
+        },
+        {
+          where: {
+            conversationId: {
+              [Op.eq]: conversationId,
+            },
+            senderId: {
+              [Op.not]: senderId,
+            },
+          },
+        }
+      );
+      res.sendStatus(204);
+    } else {
+      return res.sendStatus(400);
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
