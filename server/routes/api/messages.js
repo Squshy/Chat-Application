@@ -44,7 +44,7 @@ router.post("/", async (req, res, next) => {
         user2Id: recipientId,
       });
 
-      redisClient.hget(`user:${sender.id}`, "socket", (err, user) => {
+      redisClient.get(`user:${sender.id}`, (err, user) => {
         if (err) console.error(err);
         if (user !== null) {
           sender.online = true;

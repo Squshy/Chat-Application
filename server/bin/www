@@ -35,7 +35,7 @@ const io = require("socket.io")(server);
 
 io.on("connection", (socket) => {
   socket.on("go-online", (id) => {
-    redisClient.hset(`user:${id}`, "socket", socket.id, (err) => {
+    redisClient.set(`user:${id}`, socket.id, (err) => {
       if (err) console.error(err);
     });
     // send the user who just went online to everyone else who is already online
@@ -43,7 +43,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("new-message", (data) => {
-    redisClient.hget(`user:${data.recipientId}`, "socket", (err, user) => {
+    redisClient.get(`user:${data.recipientId}`, (err, user) => {
       if (err) console.error(err);
       if (user !== null) {
         // only need to emit message if the user is online
@@ -57,10 +57,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("logout", (id) => {
-    redisClient.hget(`user:${id}`, "socket", (err, user) => {
+    redisClient.get(`user:${id}`, (err, user) => {
       if(err) console.error(err)
       if(user !== null) {
-        redisClient.hdel(`user:${id}`, "socket")
+        redisClient.del(`user:${id}`, "socket")
         socket.broadcast.emit("remove-offline-user", id);
       }
     })

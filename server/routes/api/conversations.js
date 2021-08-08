@@ -1,8 +1,8 @@
 const router = require("express").Router();
 const { User, Conversation, Message } = require("../../db/models");
 const { Op } = require("sequelize");
-const Redis = require('redis');
-const redisClient = Redis.createClient()
+const Redis = require("redis");
+const redisClient = Redis.createClient();
 
 // get all conversations for a user, include latest message text for preview, and all messages
 // include other user model so we have info on username/profile pic (don't include current user info)
@@ -63,22 +63,26 @@ router.get("/", async (req, res, next) => {
       }
 
       // set property for online status of the other user
-      redisClient.hget(`user:${convoJSON.otherUser.id}`, "socket", (err, user) => {
-        if(err) console.error(err)
-        if(user !== null) {
-          convoJSON.otherUser.online = true
+      redisClient.get(`user:${convoJSON.otherUser.id}`, (err, user) => {
+        if (err) console.error(err);
+        if (user !== null) {
+          convoJSON.otherUser.online = true;
         } else {
-          convoJSON.otherUser.online = false 
+          convoJSON.otherUser.online = false;
         }
-      })
+      });
 
       // set properties for notification count and latest message preview
       conversations[i] = convoJSON;
 
-      const unreadCount = conversations[i].messages.reduce((accumulator, message) => {
-        if (message.senderId !== userId && message.isRead === false) return accumulator + 1;
-        return accumulator;
-      }, 0);
+      const unreadCount = conversations[i].messages.reduce(
+        (accumulator, message) => {
+          if (message.senderId !== userId && message.isRead === false)
+            return accumulator + 1;
+          return accumulator;
+        },
+        0
+      );
 
       conversations[i].messages.reverse();
       conversations[i].unreadMessageCount = unreadCount;

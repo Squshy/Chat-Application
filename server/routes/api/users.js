@@ -26,7 +26,7 @@ router.get("/:username", async (req, res, next) => {
     // add online status to each user that is online
     for (let i = 0; i < users.length; i++) {
       const userJSON = users[i].toJSON();
-      redisClient.hget(`user:${sender.id}`, "socket", (err, user) => {
+      redisClient.get(`user:${sender.id}`, (err, user) => {
         if (err) console.error(err);
         if (user !== null) {
           userJSON.online = true;
