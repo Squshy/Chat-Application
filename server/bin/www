@@ -11,7 +11,6 @@ const { app, sessionStore } = require("../app");
 const http = require("http");
 const db = require("../db");
 const onlineUsers = require("../onlineUsers");
-const onlineSockets = require("../onlineSockets");
 
 /**
  * Get port from environment and store in Express.
@@ -34,19 +33,18 @@ const io = require("socket.io")(server);
 
 io.on("connection", (socket) => {
   socket.on("go-online", (id) => {
-    if (!onlineUsers.includes(id)) {
-      onlineUsers.push(id);
+    if (!onlineUsers[id]) {
       // store the users socket in hash table
-      onlineSockets[id] = socket.id;
+      onlineUsers[id] = socket.id;
     }
     // send the user who just went online to everyone else who is already online
     socket.broadcast.emit("add-online-user", id);
   });
 
   socket.on("new-message", (data) => {
-    if (onlineUsers.includes(data.recipientId)) {
+    if (onlineUsers[data.recipientId]) {
       // only need to emit message if the user is online
-      socket.to(onlineSockets[data.recipientId]).emit("new-message", {
+      socket.to(onlineUsers[data.recipientId]).emit("new-message", {
         message: data.message,
         recipientId: data.recipientId,
         sender: data.sender,
@@ -55,11 +53,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("logout", (id) => {
-    if (onlineUsers.includes(id)) {
-      userIndex = onlineUsers.indexOf(id);
-      onlineUsers.splice(userIndex, 1);
+    if (onlineUsers[id]) {
       // remove user in hash table
-      delete onlineSockets[id]
+      delete onlineUsers[id]
       socket.broadcast.emit("remove-offline-user", id);
     }
   });
