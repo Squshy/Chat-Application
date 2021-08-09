@@ -24,7 +24,12 @@ export const fetchUser = () => async (dispatch) => {
     const { data } = await axios.get("/auth/user");
     dispatch(gotUser(data));
     if (data.id) {
-      socket.emit("go-online", data.id);
+      const token = await localStorage.getItem("messenger-token");
+      const body = {
+        id: data.id,
+        token: token,
+      };
+      socket.emit("go-online", body);
     }
   } catch (error) {
     console.error(error);
@@ -38,7 +43,11 @@ export const register = (credentials) => async (dispatch) => {
     const { data } = await axios.post("/auth/register", credentials);
     await localStorage.setItem("messenger-token", data.token);
     dispatch(gotUser(data));
-    socket.emit("go-online", data.id);
+    const body = {
+      id: data.id,
+      token: data.token
+    }
+    socket.emit("go-online", body);
   } catch (error) {
     console.error(error);
     dispatch(gotUser({ error: error.response.data.error || "Server Error" }));
@@ -50,7 +59,11 @@ export const login = (credentials) => async (dispatch) => {
     const { data } = await axios.post("/auth/login", credentials);
     await localStorage.setItem("messenger-token", data.token);
     dispatch(gotUser(data));
-    socket.emit("go-online", data.id);
+    const body = {
+      id: data.id,
+      token: data.token
+    }
+    socket.emit("go-online", body);
   } catch (error) {
     console.error(error);
     dispatch(gotUser({ error: error.response.data.error || "Server Error" }));
@@ -121,7 +134,10 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 
 export const clearReadMessages = (body) => async (dispatch, getState) => {
   try {
-    await axios.put(`/api/conversations/${body.conversationId}/read-status`, body);
+    await axios.put(
+      `/api/conversations/${body.conversationId}/read-status`,
+      body
+    );
     const { user } = getState();
     dispatch(setReadMessages(body.conversationId, user));
   } catch (error) {
