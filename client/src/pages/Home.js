@@ -6,7 +6,6 @@ import { Grid, CssBaseline, Button } from "@material-ui/core";
 import { SidebarContainer } from "../components/Sidebar";
 import { ActiveChat } from "../components/ActiveChat";
 import { logout, fetchConversations } from "../store/utils/thunkCreators";
-import { clearOnLogout } from "../store/index";
 
 const styles = {
   root: {
@@ -72,7 +71,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     logout: (id) => {
       dispatch(logout(id));
-      dispatch(clearOnLogout());
     },
     fetchConversations: () => {
       dispatch(fetchConversations());

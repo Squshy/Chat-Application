@@ -10,9 +10,8 @@ require("dotenv").config();
 const { app, sessionStore } = require("../app");
 const http = require("http");
 const db = require("../db");
-const Redis = require("redis");
-
-const redisClient = Redis.createClient();
+const socketioJwt = require("socketio-jwt");
+const redisClient = require("../redis/redis");
 
 /**
  * Get port from environment and store in Express.
@@ -33,7 +32,16 @@ const server = http.createServer(app);
 
 const io = require("socket.io")(server);
 
+io.use(
+  socketioJwt.authorize({
+    secret: process.env.SESSION_SECRET,
+    handshake: true,
+    auth_header_required: true,
+  })
+);
+
 io.on("connection", (socket) => {
+
   socket.on("go-online", (id) => {
     redisClient.set(`user:${id}`, socket.id, (redisErr) => {
       if (redisErr) console.error(redisErr);
