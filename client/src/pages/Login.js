@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
-import { login } from "../store/utils/thunkCreators";
+import {login } from "../store/utils/thunkCreators";
 import { FormField, MainForm } from "../components/UserForm";
 
 const Login = (props) => {
@@ -47,6 +47,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     login: (credentials) => {
       dispatch(login(credentials));
+      // dispatch(createSocketConnection());
     },
   };
 };

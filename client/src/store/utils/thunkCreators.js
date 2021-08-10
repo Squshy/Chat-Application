@@ -1,12 +1,15 @@
 import axios from "axios";
-import socket from "../../socket";
+import { io } from "socket.io-client";
 import {
   gotConversations,
   addConversation,
   setNewMessage,
   setSearchedUsers,
   setReadMessages,
+  addOnlineUser,
+  removeOfflineUser,
 } from "../conversations";
+import { setSocket } from "../socket";
 import { gotUser, setFetchingStatus } from "../user";
 
 axios.interceptors.request.use(async function (config) {
@@ -18,12 +21,15 @@ axios.interceptors.request.use(async function (config) {
 
 // USER THUNK CREATORS
 
-export const fetchUser = () => async (dispatch) => {
+export const fetchUser = () => async (dispatch, getState) => {
   dispatch(setFetchingStatus(true));
   try {
     const { data } = await axios.get("/auth/user");
     dispatch(gotUser(data));
     if (data.id) {
+      await createSocketConnection(data.token, dispatch);
+      const { socket } = getState();
+      console.log("Socket in fetch user:", socket);
       socket.emit("go-online", data.id);
     }
   } catch (error) {
@@ -33,11 +39,13 @@ export const fetchUser = () => async (dispatch) => {
   }
 };
 
-export const register = (credentials) => async (dispatch) => {
+export const register = (credentials) => async (dispatch, getState) => {
   try {
     const { data } = await axios.post("/auth/register", credentials);
     await localStorage.setItem("messenger-token", data.token);
     dispatch(gotUser(data));
+    await createSocketConnection(data.token, dispatch);
+    const { socket } = getState();
     socket.emit("go-online", data.id);
   } catch (error) {
     console.error(error);
@@ -45,11 +53,13 @@ export const register = (credentials) => async (dispatch) => {
   }
 };
 
-export const login = (credentials) => async (dispatch) => {
+export const login = (credentials) => async (dispatch, getState) => {
   try {
     const { data } = await axios.post("/auth/login", credentials);
     await localStorage.setItem("messenger-token", data.token);
     dispatch(gotUser(data));
+    await createSocketConnection(data.token, dispatch);
+    const { socket } = getState();
     socket.emit("go-online", data.id);
   } catch (error) {
     console.error(error);
@@ -57,11 +67,12 @@ export const login = (credentials) => async (dispatch) => {
   }
 };
 
-export const logout = (id) => async (dispatch) => {
+export const logout = (id) => async (dispatch, getState) => {
   try {
     await axios.delete("/auth/logout");
     await localStorage.removeItem("messenger-token");
     dispatch(gotUser({}));
+    const { socket } = getState();
     socket.emit("logout", id);
   } catch (error) {
     console.error(error);
@@ -84,7 +95,7 @@ const saveMessage = async (body) => {
   return data;
 };
 
-const sendMessage = (data, body) => {
+const sendMessage = (data, body, socket) => {
   socket.emit("new-message", {
     message: data.message,
     recipientId: body.recipientId,
@@ -94,7 +105,7 @@ const sendMessage = (data, body) => {
 
 // message format to send: {recipientId, text, conversationId}
 // conversationId will be set to null if its a brand new conversation
-export const postMessage = (body) => async (dispatch) => {
+export const postMessage = (body) => async (dispatch, getState) => {
   try {
     const data = await saveMessage(body);
 
@@ -103,8 +114,9 @@ export const postMessage = (body) => async (dispatch) => {
     } else {
       dispatch(setNewMessage(data.message, data.sender));
     }
+    const { socket } = getState();
 
-    sendMessage(data, body);
+    sendMessage(data, body, socket);
   } catch (error) {
     console.error(error);
   }
@@ -129,5 +141,34 @@ export const clearReadMessages = (body) => async (dispatch, getState) => {
     dispatch(setReadMessages(body.conversationId, user));
   } catch (error) {
     console.log(error);
+  }
+};
+
+// SOCKET THUNK CREATORS
+const createSocketConnection = async (token, dispatch) => {
+  try {
+    const token = await localStorage.getItem("messenger-token");
+    const newSocket = io(window.location.origin, {
+      extraHeaders: { Authorization: `Bearer ${token}` },
+    });
+    newSocket.on("connect", () => {
+      console.log(`connected to server`);
+
+      newSocket.on("add-online-user", (id) => {
+        dispatch(addOnlineUser(id));
+      });
+
+      newSocket.on("remove-offline-user", (id) => {
+        dispatch(removeOfflineUser(id));
+      });
+
+      newSocket.on("new-message", (data) => {
+        dispatch(setNewMessage(data.message, data.sender));
+      });
+    });
+    console.log("Setting new socket:", newSocket);
+    dispatch(setSocket(newSocket));
+  } catch (error) {
+    console.error(error);
   }
 };

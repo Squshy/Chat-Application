@@ -11,6 +11,7 @@ const { app, sessionStore } = require("../app");
 const http = require("http");
 const db = require("../db");
 const Redis = require("redis");
+const socketioJwt = require('socketio-jwt')
 
 const redisClient = Redis.createClient();
 
@@ -33,8 +34,17 @@ const server = http.createServer(app);
 
 const io = require("socket.io")(server);
 
+io.use(socketioJwt.authorize({
+  secret: process.env.SESSION_SECRET,
+  handshake: true,
+  auth_header_required: true
+}));
+
 io.on("connection", (socket) => {
+  console.log("Someone has connected:",socket.id)
+
   socket.on("go-online", (id) => {
+    console.log("\nSomeone broadcasted that they are online", id, "\n")
     redisClient.set(`user:${id}`, socket.id, (redisErr) => {
       if (redisErr) console.error(redisErr);
       // send the user who just went online to everyone else who is already online
