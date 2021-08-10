@@ -1,5 +1,6 @@
 import axios from "axios";
 import { io } from "socket.io-client";
+import { clearOnLogout } from "..";
 import {
   gotConversations,
   addConversation,
@@ -27,7 +28,8 @@ export const fetchUser = () => async (dispatch, getState) => {
     const { data } = await axios.get("/auth/user");
     dispatch(gotUser(data));
     if (data.id) {
-      await createSocketConnection(data.token, dispatch);
+      const token = await localStorage.getItem("messenger-token");
+      await createSocketConnection(token, dispatch);
       const { socket } = getState();
       console.log("Socket in fetch user:", socket);
       socket.emit("go-online", data.id);
@@ -70,10 +72,13 @@ export const login = (credentials) => async (dispatch, getState) => {
 export const logout = (id) => async (dispatch, getState) => {
   try {
     await axios.delete("/auth/logout");
+    console.log("getState():", getState())
+    const { socket } = getState();
+    console.log("Socket in logout:", socket);
+    socket.emit("logout", id);
     await localStorage.removeItem("messenger-token");
     dispatch(gotUser({}));
-    const { socket } = getState();
-    socket.emit("logout", id);
+    dispatch(clearOnLogout())
   } catch (error) {
     console.error(error);
   }
@@ -145,9 +150,8 @@ export const clearReadMessages = (body) => async (dispatch, getState) => {
 };
 
 // SOCKET THUNK CREATORS
-const createSocketConnection = async (token, dispatch) => {
+const createSocketConnection = (token, dispatch) => {
   try {
-    const token = await localStorage.getItem("messenger-token");
     const newSocket = io(window.location.origin, {
       extraHeaders: { Authorization: `Bearer ${token}` },
     });

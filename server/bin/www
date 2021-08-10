@@ -53,6 +53,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("new-message", (data) => {
+    console.log("\nSomeone emitted a new message\n")
     redisClient.get(`user:${data.recipientId}`, (err, user) => {
       if (err) console.error(err);
       if (user !== null) {
@@ -67,6 +68,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("logout", (id) => {
+    console.log("\nSomeone emitted that they went offline\n")
     redisClient.get(`user:${id}`, (err, user) => {
       if (err) console.error(err);
       if (user !== null) {
