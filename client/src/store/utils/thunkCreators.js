@@ -72,9 +72,7 @@ export const login = (credentials) => async (dispatch, getState) => {
 export const logout = (id) => async (dispatch, getState) => {
   try {
     await axios.delete("/auth/logout");
-    console.log("getState():", getState())
     const { socket } = getState();
-    console.log("Socket in logout:", socket);
     socket.emit("logout", id);
     await localStorage.removeItem("messenger-token");
     dispatch(gotUser({}));
@@ -170,7 +168,6 @@ const createSocketConnection = (token, dispatch) => {
         dispatch(setNewMessage(data.message, data.sender));
       });
     });
-    console.log("Setting new socket:", newSocket);
     dispatch(setSocket(newSocket));
   } catch (error) {
     console.error(error);
