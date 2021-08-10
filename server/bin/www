@@ -41,10 +41,8 @@ io.use(
 );
 
 io.on("connection", (socket) => {
-  console.log("Someone has connected:", socket.id);
 
   socket.on("go-online", (id) => {
-    console.log("\nSomeone broadcasted that they are online", id, "\n");
     redisClient.set(`user:${id}`, socket.id, (redisErr) => {
       if (redisErr) console.error(redisErr);
       // send the user who just went online to everyone else who is already online
@@ -53,7 +51,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("new-message", (data) => {
-    console.log("\nSomeone emitted a new message\n");
     redisClient.get(`user:${data.recipientId}`, (err, user) => {
       if (err) console.error(err);
       if (user !== null) {
@@ -68,7 +65,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("logout", (id) => {
-    console.log("\nSomeone emitted that they went\n");
     redisClient.get(`user:${id}`, (err, user) => {
       if (err) console.error(err);
       if (user !== null) {

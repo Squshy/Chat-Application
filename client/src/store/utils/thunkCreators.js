@@ -31,7 +31,6 @@ export const fetchUser = () => async (dispatch, getState) => {
       const token = await localStorage.getItem("messenger-token");
       await createSocketConnection(token, dispatch);
       const { socket } = getState();
-      console.log("Socket in fetch user:", socket);
       socket.emit("go-online", data.id);
     }
   } catch (error) {
@@ -74,6 +73,7 @@ export const logout = (id) => async (dispatch, getState) => {
     await axios.delete("/auth/logout");
     const { socket } = getState();
     socket.emit("logout", id);
+    clearSocketConnection(socket, dispatch)
     await localStorage.removeItem("messenger-token");
     dispatch(gotUser({}));
     dispatch(clearOnLogout())
@@ -173,3 +173,8 @@ const createSocketConnection = (token, dispatch) => {
     console.error(error);
   }
 };
+
+const clearSocketConnection = (socket, dispatch) => {
+  socket.close()
+  dispatch(setSocket({}))
+}

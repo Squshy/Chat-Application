@@ -66,8 +66,10 @@ router.get("/", async (req, res, next) => {
         if (err) console.error(err);
         if (user !== null) {
           convoJSON.otherUser.online = true;
+          return true
         } else {
           convoJSON.otherUser.online = false;
+          return false
         }
       });
 
