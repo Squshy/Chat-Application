@@ -10,7 +10,8 @@ require("dotenv").config();
 const { app, sessionStore } = require("../app");
 const http = require("http");
 const db = require("../db");
-const onlineUsers = require("../onlineUsers");
+const socketioJwt = require("socketio-jwt");
+const redisClient = require("../redis");
 
 /**
  * Get port from environment and store in Express.
@@ -31,29 +32,46 @@ const server = http.createServer(app);
 
 const io = require("socket.io")(server);
 
+io.use(
+  socketioJwt.authorize({
+    secret: process.env.SESSION_SECRET,
+    handshake: true,
+    auth_header_required: true,
+  })
+);
+
 io.on("connection", (socket) => {
+
   socket.on("go-online", (id) => {
-    if (!onlineUsers.includes(id)) {
-      onlineUsers.push(id);
-    }
-    // send the user who just went online to everyone else who is already online
-    socket.broadcast.emit("add-online-user", id);
+    redisClient.set(`user:${id}`, socket.id, (redisErr) => {
+      if (redisErr) console.error(redisErr);
+      // send the user who just went online to everyone else who is already online
+      else socket.broadcast.emit("add-online-user", id);
+    });
   });
 
   socket.on("new-message", (data) => {
-    socket.broadcast.emit("new-message", {
-      message: data.message,
-      recipientId: data.recipientId,
-      sender: data.sender,
+    redisClient.get(`user:${data.recipientId}`, (err, user) => {
+      if (err) console.error(err);
+      if (user !== null) {
+        // only need to emit message if the user is online
+        socket.to(user).emit("new-message", {
+          message: data.message,
+          recipientId: data.recipientId,
+          sender: data.sender,
+        });
+      }
     });
   });
 
   socket.on("logout", (id) => {
-    if (onlineUsers.includes(id)) {
-      userIndex = onlineUsers.indexOf(id);
-      onlineUsers.splice(userIndex, 1);
-      socket.broadcast.emit("remove-offline-user", id);
-    }
+    redisClient.get(`user:${id}`, (err, user) => {
+      if (err) console.error(err);
+      if (user !== null) {
+        redisClient.del(`user:${id}`, "socket");
+        socket.broadcast.emit("remove-offline-user", id);
+      }
+    });
   });
 });
 
