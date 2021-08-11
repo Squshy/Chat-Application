@@ -1,8 +1,7 @@
 const router = require("express").Router();
 const { User } = require("../../db/models");
 const { Op } = require("sequelize");
-const Redis = require('redis');
-const redisClient = Redis.createClient()
+const redisClient = require('../../redis')
 
 // find users by username
 router.get("/:username", async (req, res, next) => {
